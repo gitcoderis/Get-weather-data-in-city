@@ -71,7 +71,7 @@ function getData(){
             canPush = true;
           }
         }
-        (canPush === true) ? cities.push(data) : console.log('falssasss');
+        (canPush === true) ? cities.push(data) : false;
     } else {
       cities.push(data);
     }
@@ -95,7 +95,6 @@ function getCities(){
 
 
       });
-      console.log(result);
     }
 }
 
