@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Weather Namu darbai. Marius</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  </head>
+  <body>
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <h1>Weather in City</h1>
+      <form class="">
+        <input type="text" name="" class="form-control mt-2" placeholder="ID" id="id" value="732ee9d1c9490018d3341dc2074ea3c7">
+        <input type="text" name="" class="form-control mt-2" placeholder="City" id="city" value="Riga">
+        <button type="button" name="button" class="btn btn-success mt-2">Get</button>
+      </form>
+      <div class="card mt-5">
+        <div class="card-block text-center">
+          <p id="data"></p>
+        </div>
+
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+          <!-- <li class="nav-item">
+            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
+          </li> -->
+
+        </ul>
+        <div class="tab-content" id="myTabContent">
+          <!-- <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">...</div> -->
+
+        </div>
+
+
+      </div>
+
+    </div>
+  </div>
+</div>
+</body>
+  <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script> -->
+  <script
+    src="http://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script>
+$( document ).ready(function() {
+
+  let id = $('#id');
+  let city = $('#city');
+  let cities = [];
+
+  $('button').click(function(){
+  getData();
+  });
+
+function getData(){
+  let url = "http://api.openweathermap.org/data/2.5/weather?q="+city.val()+"&appid="+id.val(); //732ee9d1c9490018d3341dc2074ea3c7
+  $.get(url, function(data) { //'http://api.openweathermap.org/data/2.5/weather?q=London,uk&appid=732ee9d1c9490018d3341dc2074ea3c7
+    // $("#data").text(data.name);
+    if(cities.length!==0) {
+        let canPush = false;
+        for(let i = 0; i < cities.length; i++){
+
+          if(cities[i].name === data.name) {
+
+            canPush =  false;
+          } else {
+            canPush = true;
+          }
+        }
+        (canPush === true) ? cities.push(data) : console.log('falssasss');
+    } else {
+      cities.push(data);
+    }
+
+  }).done(function() {
+    getCities();
+  }).fail(function() {
+    $("#data").text("ERROR");
+  });
+}
+
+function getCities(){
+  $("#data").empty();
+  addTabs();
+    for(let i = 0; i<cities.length; i++){
+      let result;
+      $.each(cities[i].main, function(key, value){
+        result = key + " " + value;
+        $('#city_'+i).append(`<p>${result}</p>`);
+
+
+
+      });
+      console.log(result);
+    }
+}
+
+$('.nav-tabs').on('click', 'a', function(e){
+  e.preventDefault();
+  $(this).tab('show');
+});
+
+function addTabs() {
+
+  $('.nav-tabs').empty();
+  $('.tab-content').empty();
+  for(let i = 0; i<cities.length;i++){
+
+    let idNum = $('.nav-tabs').children().length;
+     let tabId = 'city_'+idNum;
+
+      // if(cities.length <2) {
+        $('.nav-tabs').append('<li class="nav-item"><a class="nav-link" href="#city_'+idNum+'" role="tab">'+cities[i].name+'</a></li>');
+        $('.tab-content').append('<div class="tab-pane" id="'+tabId+'" role="tabpanel"></div>');
+
+   }
+    $('.nav-tabs li:last-child a').click();
+
+}
+
+
+
+
+
+});
+
+
+</script>
+</html>
